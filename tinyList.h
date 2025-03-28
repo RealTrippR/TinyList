@@ -1,14 +1,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-void __tiny_list__deallocNode(void* node) {
-    free(node);
-}
-
-void* __tiny_list__allocNode(uint16_t bytes) {
-    return malloc(bytes);
-}
-
+enum TINYLIST_RETURN_CODE {
+    TINYLIST_FAIL,
+    TINYLIST_SUCCESS
+};
 /*
 #ifdef __TINY_LIST_VERIFY_OPERATIONS__\
     if (!node) {\
@@ -34,10 +30,6 @@ struct listNode_##NODE_TYPE \
     struct listNode_##NODE_TYPE* next;\
     NODE_TYPE value; \
 }; \
-
-#include "tinylistValidator.h"
-
-#define DEFINE_LINKED_LIST_OPERATIONS(NODE_TYPE)\
 /**********************************************************************************/\
 /*                              FUNCTION PROTOTYPES:                              */\
 LIST_NODE(NODE_TYPE)* createListNode_##NODE_TYPE();\
@@ -49,6 +41,27 @@ LIST_NODE(NODE_TYPE)* getNodeAtPosition_##NODE_TYPE(LIST_NODE(NODE_TYPE)* head, 
 uint32_t getLinkedListLength_##NODE_TYPE(LIST_NODE(NODE_TYPE)* head);\
 void deleteNode_##NODE_TYPE(LIST_NODE(NODE_TYPE)* prev, uint32_t offsetFromPrev);\
 /**********************************************************************************/\
+
+#include "validator/tinylistValidator.h"
+
+void __tiny_list__deallocNode(void* node) {
+
+    #ifdef __TINY_LIST_VERIFY_OPERATIONS__
+        hashmap_delete(TLcleanupValidator.addressHashMap, (void**)(&node));
+    #endif
+    free(node);
+}
+    
+void* __tiny_list__allocNode(uint16_t bytes) {
+    void* ptr = malloc(bytes);
+    #ifdef __TINY_LIST_VERIFY_OPERATIONS__
+        hashmap_set(TLcleanupValidator.addressHashMap, (void**)(&ptr));
+    #endif
+    return ptr;
+}
+
+    
+#define DEFINE_LINKED_LIST_OPERATIONS(NODE_TYPE)\
 \
 inline LIST_NODE(NODE_TYPE)* createListNode_##NODE_TYPE\
 ()\
@@ -62,9 +75,11 @@ inline LIST_NODE(NODE_TYPE)* createListNode_##NODE_TYPE\
 inline void destroyLinkedList_##NODE_TYPE\
 (LIST_NODE(NODE_TYPE)* node)\
 { \
-    if (NULL==node) {return;}\
-    destroyLinkedList_##NODE_TYPE(node->next);\
+    validateListCleanup_##NODE_TYPE(node);\
+    LIST_NODE(NODE_TYPE)* next = node->next;\
     __tiny_list__deallocNode(node);\
+    if (next == NULL) { return; }\
+    destroyLinkedList_##NODE_TYPE(next);\
 }\
 \
 inline void reverseLinkedList_##NODE_TYPE\
