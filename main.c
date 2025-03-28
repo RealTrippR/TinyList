@@ -34,8 +34,6 @@ int main() {
 
     DELETE_NODE(uint8_t, head, 1u /*pos of the node to delete*/);
 
-
-
     DESTROY_LINKED_LIST(uint8_t,head);
 
 #ifndef NDEBUG
