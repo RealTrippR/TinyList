@@ -46,21 +46,21 @@ void deleteNode_##NODE_TYPE(LIST_NODE(NODE_TYPE)* prev, uint32_t offsetFromPrev)
 
 void __tiny_list__deallocNode(void* node) {
 
-    #ifdef __TINY_LIST_VERIFY_OPERATIONS__
-        hashmap_delete(TLcleanupValidator.addressHashMap, (void**)(&node));
-    #endif
+#ifdef __TINY_LIST_VERIFY_OPERATIONS__
+    hashmap_delete(TLcleanupValidator.addressHashMap, (void**)(&node));
+#endif
     free(node);
 }
-    
+
 void* __tiny_list__allocNode(uint16_t bytes) {
     void* ptr = malloc(bytes);
-    #ifdef __TINY_LIST_VERIFY_OPERATIONS__
-        hashmap_set(TLcleanupValidator.addressHashMap, (void**)(&ptr));
-    #endif
+#ifdef __TINY_LIST_VERIFY_OPERATIONS__
+    hashmap_set(TLcleanupValidator.addressHashMap, (void**)(&ptr));
+#endif
     return ptr;
 }
 
-    
+
 #define DEFINE_LINKED_LIST_OPERATIONS(NODE_TYPE)\
 \
 inline LIST_NODE(NODE_TYPE)* createListNode_##NODE_TYPE\
@@ -75,7 +75,7 @@ inline LIST_NODE(NODE_TYPE)* createListNode_##NODE_TYPE\
 inline void destroyLinkedList_##NODE_TYPE\
 (LIST_NODE(NODE_TYPE)* node)\
 { \
-    validateListCleanup_##NODE_TYPE(node);\
+    VALIDATE_LIST_CLEANUP(NODE_TYPE, node);\
     LIST_NODE(NODE_TYPE)* next = node->next;\
     __tiny_list__deallocNode(node);\
     if (next == NULL) { return; }\
