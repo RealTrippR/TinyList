@@ -1,12 +1,14 @@
 {
     "files.associations": {
         "*.embeddedhtml": "html",
+        "*.ejs": "html",
         "stdio.h": "c",
         "listnode.h": "c",
         "stdlib.h": "c",
         "type_traits": "c",
         "xtr1common": "c",
         "xutility": "c",
-        "stdint.h": "c"
+        "stdint.h": "c",
+        "tinydir.h": "c"
     }
 }

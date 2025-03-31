@@ -105,7 +105,7 @@ inline void insertListNode_##NODE_TYPE\
     nodeToInsert->next=oldNext;\
 }\
 /*returns the position of the node in the list. If the node not a descendant of the head it will return -1*/ \
-inline int64_t getPositionOfNode_##NODE_TYPE\
+inline uint32_t getPositionOfNode_##NODE_TYPE\
 (LIST_NODE(NODE_TYPE)* head, const LIST_NODE(NODE_TYPE)* node)\
 {\
     uint32_t pos = 0u;\
@@ -113,10 +113,10 @@ inline int64_t getPositionOfNode_##NODE_TYPE\
     while (1) {\
         if (cur==node){return pos;}\
         cur = cur->next;\
-        if (cur==NULL) {return -1;} /*The node was not found in the list.*/\
+        if (cur==NULL) {return NULL;} /*The node was not found in the list.*/\
         pos++;\
     }\
-    return -1;\
+    return NULL;\
 }\
 \
 inline LIST_NODE(NODE_TYPE)* getNodeAtPosition_##NODE_TYPE\
@@ -156,27 +156,27 @@ inline void deleteNode_##NODE_TYPE\
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+/*Allocates and returns a 0-initialized node*/
 #define CREATE_LIST_NODE(NODE_TYPE) createListNode_##NODE_TYPE\
 ()
-
+/*This recursively destroys every node in the list, starting at the head*/
 #define DESTROY_LINKED_LIST(NODE_TYPE, node) destroyLinkedList_##NODE_TYPE\
 (node)
-
+/*Reverses the linked list, starting at the head*/
 #define REVERSE_LINKED_LIST(NODE_TYPE, head) reverseLinkedList_##NODE_TYPE\
 (head)
-
+/*Inserts a node after prev. (prev->next will equal node, and node->next will reference the node that prev->next used to point to)*/
 #define INSERT_LIST_NODE(NODE_TYPE, prev, node) insertListNode_##NODE_TYPE\
 (prev, node)
-
+/*Returns the node at the position if it exists, if it does not exist it will return NULL*/
 #define GET_NODE_AT_POSITON(NODE_TYPE, head, pos) getNodeAtPosition_##NODE_TYPE\
 (head,pos)
 /*returns the position of the node in the list. If the node not a descendant of the head it will return -1*/ \
 #define GET_POSITION_OF_NODE(NODE_TYPE, head, node) getPositionOfNode_##NODE_TYPE\
 (head,node)
-
+/*Returns the length of the linked list, starting from the head*/
 #define GET_LIST_LENGTH(NODE_TYPE, head) getLinkedListLength_##NODE_TYPE\
 (head)
-
+/*Deallocates the node offsetFromPrevious nodes after prev*/
 #define DELETE_NODE(NODE_TYPE, prev, offsetFromPrevious) deleteNode_##NODE_TYPE\
 (prev, offsetFromPrevious)
