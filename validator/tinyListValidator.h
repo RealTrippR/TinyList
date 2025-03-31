@@ -32,6 +32,7 @@ enum TINYLIST_RETURN_CODE __TINY_LIST_VALIDATE_CLEANUP__() {
         assert(0&&"TINYLIST: MEMORY LEAK: Not all allocated list nodes have been freed!");
     }
     hashmap_free(TLcleanupValidator.addressHashMap);
+    return TINYLIST_SUCCESS;
 }
 
 
