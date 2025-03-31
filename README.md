@@ -5,10 +5,6 @@ TinyList has an optional validator to prevent errors and detect memory leaks.
 
 ## Example ##
 ```
-#include <stdio.h>
-#include <stdint.h>
-
-
 #include "tinyList.h"
 DEFINE_LIST_NODE_TYPE(uint8_t)
 #ifndef NDEBUG
