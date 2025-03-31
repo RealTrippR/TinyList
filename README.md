@@ -7,10 +7,10 @@ It supports basic operations, such as node insertion and deletion, and linked li
 
 ## Operations ##
 ```
-
+## Defines the node struct for this type
 DEFINE_LIST_NODE_TYPE(nodeType)
 
-
+## Defines the linked list operations for this type
 DEFINE_LINKED_LIST_OPERATIONS(nodeType)
 
 ## Allocates and returns a 0-initialized node
@@ -40,3 +40,11 @@ Deallocates the node offsetFromPrevious nodes after prev
 
 ## Validation ##
 Tiny list has optional protection againt invalid operations and memory leaks.
+
+```
+## Enables verification of TinyList operations
+#define __TINY_LIST_VERIFY_OPERATIONS__
+
+## Defines the verification functions
+__DEFINE_TINY_LIST_VERIFY_OPERATIONS__(uint8_t) 
+```
