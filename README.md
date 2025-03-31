@@ -46,5 +46,11 @@ Tiny list has optional protection againt invalid operations and memory leaks.
 #define __TINY_LIST_VERIFY_OPERATIONS__
 
 ## Defines the verification functions
-__DEFINE_TINY_LIST_VERIFY_OPERATIONS__(uint8_t) 
+__DEFINE_TINY_LIST_VERIFY_OPERATIONS__(uint8_t)
+
+## Initializes the cleanup validator
+__TINY_LIST_INIT_CLEANUP_VALIDATOR__();
+
+## Checks for memory leaks and destroys the cleanup validator
+__TINY_LIST_VALIDATE_CLEANUP__();
 ```
