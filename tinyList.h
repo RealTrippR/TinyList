@@ -36,7 +36,7 @@ LIST_NODE(NODE_TYPE)* createListNode_##NODE_TYPE();\
 void destroyLinkedList_##NODE_TYPE(LIST_NODE(NODE_TYPE)* node);\
 void reverseLinkedList_##NODE_TYPE(LIST_NODE(NODE_TYPE)** head);\
 void insertListNode_##NODE_TYPE(LIST_NODE(NODE_TYPE)* prev, LIST_NODE(NODE_TYPE)* nodeToInsert);\
-int64_t getPositionOfNode_##NODE_TYPE(LIST_NODE(NODE_TYPE)* head, const LIST_NODE(NODE_TYPE)* node);\
+uint32_t getPositionOfNode_##NODE_TYPE(LIST_NODE(NODE_TYPE)* head, const LIST_NODE(NODE_TYPE)* node);\
 LIST_NODE(NODE_TYPE)* getNodeAtPosition_##NODE_TYPE(LIST_NODE(NODE_TYPE)* head, const uint32_t pos);\
 uint32_t getLinkedListLength_##NODE_TYPE(LIST_NODE(NODE_TYPE)* head);\
 void deleteNode_##NODE_TYPE(LIST_NODE(NODE_TYPE)* prev, uint32_t offsetFromPrev);\
@@ -113,10 +113,10 @@ inline uint32_t getPositionOfNode_##NODE_TYPE\
     while (1) {\
         if (cur==node){return pos;}\
         cur = cur->next;\
-        if (cur==NULL) {return NULL;} /*The node was not found in the list.*/\
+        if (cur==NULL) {return 0u;} /*The node was not found in the list.*/\
         pos++;\
     }\
-    return NULL;\
+    return 0u;\
 }\
 \
 inline LIST_NODE(NODE_TYPE)* getNodeAtPosition_##NODE_TYPE\
