@@ -106,7 +106,6 @@ inline void insertListNode_##NODE_TYPE\
 }\
 /*returns the position of the node in the list. If the node not a descendant of the head it will return -1*/ \
 inline uint32_t getPositionOfNode_##NODE_TYPE\
-inline uint32_t getPositionOfNode_##NODE_TYPE\
 (LIST_NODE(NODE_TYPE)* head, const LIST_NODE(NODE_TYPE)* node)\
 {\
     uint32_t pos = 0u;\
