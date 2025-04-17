@@ -259,6 +259,7 @@ inline void deleteNode_##NODE_TYPE\
 /*Creates a linked list of a given size, and for very large lists it will use multithreading to speed up creation time.*/
 #define CREATE_LINKED_LIST(NODE_TYPE, size) createLinkedListOfSize##NODE_TYPE\
 (size)
+
 /*Allocates and returns a 0-initialized node*/
 #define CREATE_LIST_NODE(NODE_TYPE) createListNode_##NODE_TYPE\
 ()
