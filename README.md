@@ -52,6 +52,9 @@ DEFINE_LIST_NODE_TYPE(nodeType)
 ## Defines the linked list operations for this type
 DEFINE_LINKED_LIST_OPERATIONS(nodeType)
 
+## Creates a linked list of a given size, and for very large lists it will use multithreading to speed up creation time. 
+CREATE_LINKED_LIST(uint8_t, NODE_COUNT);
+
 ## Allocates and returns a 0-initialized node
 CREATE_LIST_NODE(NODE_TYPE)()
 
