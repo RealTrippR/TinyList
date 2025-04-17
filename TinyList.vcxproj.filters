@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Header Files\Validator">
+      <UniqueIdentifier>{0a6b992a-05bf-4d25-8662-46ec49e30737}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="tests">
+      <UniqueIdentifier>{0d3ab878-e0eb-4145-b5ee-992b353a7ed2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ext">
+      <UniqueIdentifier>{10247cfd-acda-41b0-90fb-844e749223f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="tests\ComparisonToStandardCPP">
+      <UniqueIdentifier>{cc5c015e-e88a-466e-afde-6dcc233d0ded}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="validator\hashmap.c">
+      <Filter>Header Files\Validator</Filter>
+    </ClCompile>
+    <ClCompile Include="tests\insertNodes.c">
+      <Filter>tests</Filter>
+    </ClCompile>
+    <ClCompile Include="tests\rearrange.c">
+      <Filter>tests</Filter>
+    </ClCompile>
+    <ClCompile Include="tests\searchNodes.c">
+      <Filter>tests</Filter>
+    </ClCompile>
+    <ClCompile Include="tests\Test.c">
+      <Filter>tests</Filter>
+    </ClCompile>
+    <ClCompile Include="tests\testRunner.c">
+      <Filter>tests</Filter>
+    </ClCompile>
+    <ClCompile Include="tests\MTmallocSpeedTest.c">
+      <Filter>tests</Filter>
+    </ClCompile>
+    <ClCompile Include="TinyList\ext\cthread.c">
+      <Filter>Header Files\ext</Filter>
+    </ClCompile>
+    <ClCompile Include="insertNodes.cpp">
+      <Filter>tests\ComparisonToStandardCPP</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="validator\hashmap.h">
+      <Filter>Header Files\Validator</Filter>
+    </ClInclude>
+    <ClInclude Include="validator\tinyListValidator.h">
+      <Filter>Header Files\Validator</Filter>
+    </ClInclude>
+    <ClInclude Include="tinyList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="tests\cthread.h">
+      <Filter>Header Files\ext</Filter>
+    </ClInclude>
+    <ClInclude Include="tests\get_time_µs.h">
+      <Filter>tests</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="tests\.gitignore">
+      <Filter>tests</Filter>
+    </None>
+  </ItemGroup>
+</Project>
