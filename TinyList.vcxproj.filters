@@ -34,9 +34,6 @@
     <ClCompile Include="tests\Test.c">
       <Filter>tests</Filter>
     </ClCompile>
-    <ClCompile Include="tests\testRunner.c">
-      <Filter>tests</Filter>
-    </ClCompile>
     <ClCompile Include="tests\MTmallocSpeedTest.c">
       <Filter>tests</Filter>
     </ClCompile>
