@@ -30,7 +30,7 @@ __DEFINE_TINY_LIST_VERIFY_OPERATIONS__(uint32_t) /*Defines the verification func
 DEFINE_LINKED_LIST_OPERATIONS(uint32_t);
 
 
-#define NODE_COUNT 50000
+#define NODE_COUNT 1000
 #define TARGET_NODE_POS NODE_COUNT-1
 #define TEST_SAMPLES 150
 
@@ -74,5 +74,6 @@ int main() {
 		getElementAtIndexTest(&tt);
 		t += tt;
 	}
-	printf("Avg time spent finding the node at position %d in a list of %d elements: @ %f samples\n", TARGET_NODE_POS, NODE_COUNT, t / TEST_SAMPLES);
+	// Note that it may seem to take longer than this, but that's because the time returned by getElementAtIndexTest does not include the time it takes to create or destroy a list, only the time it takes to access it.
+	printf("Avg time spent finding the node at position %d in a list of %d elements: %f @ %d samples\n", TARGET_NODE_POS, NODE_COUNT, t / TEST_SAMPLES, TEST_SAMPLES);
 }
