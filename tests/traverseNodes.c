@@ -30,7 +30,7 @@ __DEFINE_TINY_LIST_VERIFY_OPERATIONS__(uint32_t) /*Defines the verification func
 DEFINE_LINKED_LIST_OPERATIONS(uint32_t);
 
 
-#define NODE_COUNT 1000
+#define NODE_COUNT 10000
 #define TARGET_NODE_POS NODE_COUNT-1
 #define TEST_SAMPLES 150
 

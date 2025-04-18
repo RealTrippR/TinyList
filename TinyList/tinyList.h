@@ -135,7 +135,7 @@ inline LIST_NODE(NODE_TYPE)* createLinkedListOfSize##NODE_TYPE\
         for (uint_fast8_t i = 0; i < TINY_LIST_THREAD_COUNT; ++i) {\
             /*Create a head for each thread. The heads will be joined back together once the creation of nodes is complete*/\
             thread_data[i].thread_id = i;\
-            thread_data[i].allocCount = chunkSize+ (((uint_fast32_t)((int32_t)i - remainder)) >> 31); /*This tests the sign of the result of i - remainder*/\
+            thread_data[i].allocCount = chunkSize + chunkSize + ((uint32_t)(i < remainder));\
             thread_data[i].head = &(tmpHeadNodes[i]);\
             \
             if (i<TINY_LIST_THREAD_COUNT-1) {\
@@ -147,7 +147,7 @@ inline LIST_NODE(NODE_TYPE)* createLinkedListOfSize##NODE_TYPE\
             winArgs[i].func = thread_create_nodes##NODE_TYPE;\
             winArgs[i].data = &thread_data[i];\
             \
-            cthreads_thread_create(&threads[i], NULL, thread_create_nodes##NODE_TYPE, &thread_data[i], winArgs);\
+            cthreads_thread_create(&threads[i], NULL, thread_create_nodes##NODE_TYPE, &thread_data[i],  &(winArgs[i]));\
         }\
         \
         for (uint_fast8_t i = 0; i < TINY_LIST_THREAD_COUNT; ++i) {\
