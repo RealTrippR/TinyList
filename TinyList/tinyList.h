@@ -15,23 +15,45 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#ifndef TINY_LIST
-#define TINY_LIST
+#ifndef TINY_LIST_H
+#define TINY_LIST_H
 
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 #include <stdint.h>
 
-#ifndef TINY_LIST_THREAD_COUNT 
-    #define TINY_LIST_THREAD_COUNT 4
-#endif
+#include <TinyList/ext/cthread.h>
+
 enum TINYLIST_RETURN_CODE {
     TINYLIST_FAIL,
     TINYLIST_SUCCESS
 };
 
-#define LIST_NODE(NODE_TYPE) struct listNode_##NODE_TYPE\
+#define LIST_NODE(NODE_TYPE) struct listNode_##NODE_TYPE
+
+#if defined(_MSC_VER)
+#include <xmmintrin.h>
+#define PREFETCH(addr) _mm_prefetch((const char*)(addr), _MM_HINT_T0)
+#elif defined(__GNUC__) || defined(__clang__)
+#define PREFETCH(addr) __builtin_prefetch((addr), 0, 1)
+#else
+#define PREFETCH(addr)
+#endif
+
+
+/**********************************************************************************/
+/*                                MULTI-THREADING                                 */
+#ifndef TINY_LIST_THREAD_COUNT 
+    #define TINY_LIST_THREAD_COUNT 8
+#endif
+
+struct TINY_LIST_CREATE_NODES_THREAD_DATA {
+    uint16_t thread_id;
+    uint32_t allocCount;
+    void* head;
+    void* nextHead;
+};
 
 #define DEFINE_LIST_NODE_TYPE(NODE_TYPE)\
 struct listNode_##NODE_TYPE \
@@ -42,7 +64,7 @@ struct listNode_##NODE_TYPE \
 /**********************************************************************************/\
 /*                              FUNCTION PROTOTYPES:                              */\
 LIST_NODE(NODE_TYPE)* createListNode_##NODE_TYPE();\
-LIST_NODE(NODE_TYPE)* createLinkedListOfSize##NODE_TYPE(uint32_t size)\
+LIST_NODE(NODE_TYPE)* createLinkedListOfSize##NODE_TYPE(uint32_t size);\
 void destroyLinkedList_##NODE_TYPE(LIST_NODE(NODE_TYPE)* node);\
 void reverseLinkedList_##NODE_TYPE(LIST_NODE(NODE_TYPE)** head);\
 void insertListNode_##NODE_TYPE(LIST_NODE(NODE_TYPE)* prev, LIST_NODE(NODE_TYPE)* nodeToInsert);\
@@ -63,7 +85,7 @@ void __tiny_list__deallocNode(void* node) {
 }
 
 void* __tiny_list__allocNode(uint16_t bytes) {
-    void* ptr = malloc(bytes);
+    void* __restrict ptr = malloc(bytes);
 #ifdef __TINY_LIST_VERIFY_OPERATIONS__
     hashmap_set(TLcleanupValidator.addressHashMap, (void**)(&ptr));
 #endif
@@ -81,6 +103,71 @@ inline LIST_NODE(NODE_TYPE)* createListNode_##NODE_TYPE\
     memset(node, 0, sizeof(LIST_NODE(NODE_TYPE)));\
     return node;\
 }\
+void thread_create_nodes##NODE_TYPE\
+(void* arg)\
+{\
+    struct  TINY_LIST_CREATE_NODES_THREAD_DATA* data = (struct TINY_LIST_CREATE_NODES_THREAD_DATA*)arg;\
+    LIST_NODE(NODE_TYPE)* lastNode = (LIST_NODE(NODE_TYPE)*)data->head;\
+    for (uint_fast32_t i = 0; i < data->allocCount; ++i)\
+    {\
+        LIST_NODE(NODE_TYPE)* node = CREATE_LIST_NODE(NODE_TYPE);\
+        INSERT_LIST_NODE(uint8_t, lastNode, node);\
+        lastNode = node;\
+    }\
+    lastNode->next = data->nextHead;\
+}\
+inline LIST_NODE(NODE_TYPE)* createLinkedListOfSize##NODE_TYPE\
+(uint32_t size)\
+{\
+    /*Multithreading performance gains only occur for large list, a optimal number seems to be over 100K elements */\
+    const int MT_PERFORMANCE_THRESHOLD_COUNT = TINY_LIST_THREAD_COUNT+100000;  /*Note that the TINY_LIST_THREAD_COUNT is added to the value to ensure that lists with a <= the thread count will be created with only a single thread */\
+    if (size > MT_PERFORMANCE_THRESHOLD_COUNT && TINY_LIST_THREAD_COUNT>1) {\
+        static struct cthreads_thread threads[TINY_LIST_THREAD_COUNT]; \
+        static struct TINY_LIST_CREATE_NODES_THREAD_DATA thread_data[TINY_LIST_THREAD_COUNT]; \
+        static struct cthreads_args winArgs[TINY_LIST_THREAD_COUNT]; \
+        LIST_NODE(NODE_TYPE)* tmpHeadNodes[TINY_LIST_THREAD_COUNT];\
+        for (uint_fast8_t i = 0; i < TINY_LIST_THREAD_COUNT; ++i) {\
+            tmpHeadNodes[i] = CREATE_LIST_NODE(uint8_t);\
+        }\
+        \
+        uint_fast32_t chunkSize = size / TINY_LIST_THREAD_COUNT;\
+        uint_fast32_t remainder = size % TINY_LIST_THREAD_COUNT;\
+        for (uint_fast8_t i = 0; i < TINY_LIST_THREAD_COUNT; ++i) {\
+            /*Create a head for each thread. The heads will be joined back together once the creation of nodes is complete*/\
+            thread_data[i].thread_id = i;\
+            thread_data[i].allocCount = chunkSize+ (((uint_fast32_t)((int32_t)i - remainder)) >> 31); /*This tests the sign of the result of i - remainder*/\
+            thread_data[i].head = &(tmpHeadNodes[i]);\
+            \
+            if (i<TINY_LIST_THREAD_COUNT-1) {\
+                thread_data[i].nextHead = &(tmpHeadNodes[i+1]); \
+            } \
+            else \
+            {thread_data[i].nextHead = NULL;}\
+            \
+            winArgs[i].func = thread_create_nodes##NODE_TYPE;\
+            winArgs[i].data = &thread_data[i];\
+            \
+            cthreads_thread_create(&threads[i], NULL, thread_create_nodes##NODE_TYPE, &thread_data[i], winArgs);\
+        }\
+        \
+        for (uint_fast8_t i = 0; i < TINY_LIST_THREAD_COUNT; ++i) {\
+            cthreads_thread_join(threads[i], NULL);\
+        }\
+        for (uint_fast8_t i = 0; i < TINY_LIST_THREAD_COUNT; ++i) {\
+            cthreads_thread_detach(threads[i]);\
+        }\
+        return tmpHeadNodes[0];\
+    } else {\
+        LIST_NODE(NODE_TYPE)* head = CREATE_LIST_NODE(uint8_t);\
+        LIST_NODE(NODE_TYPE)* lastNode = head;\
+        for (uint_fast16_t i = 0; i < size; ++i) {\
+            LIST_NODE(NODE_TYPE)* node = CREATE_LIST_NODE(uint8_t);\
+            INSERT_LIST_NODE(uint8_t, lastNode, node);\
+            lastNode=node;\
+        }\
+        return head;\
+    }\
+}\
 \
 inline void destroyLinkedList_##NODE_TYPE\
 (LIST_NODE(NODE_TYPE)* node)\
@@ -89,7 +176,7 @@ inline void destroyLinkedList_##NODE_TYPE\
     while (node != NULL) {\
         const void* __restrict tmp = node->next;\
         __tiny_list__deallocNode(node);\
-        node=tmp;\
+        node=(LIST_NODE(NODE_TYPE)*)tmp;\
     }\
 }\
 \
@@ -141,6 +228,7 @@ inline LIST_NODE(NODE_TYPE)* getNodeAtPosition_##NODE_TYPE\
             return cur;\
         }\
         curPos++;\
+        PREFETCH( cur->next);\
         cur = cur->next;\
     }\
     return NULL;\
@@ -167,6 +255,10 @@ inline void deleteNode_##NODE_TYPE\
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/*Creates a linked list of a given size, and for very large lists it will use multithreading to speed up creation time.*/
+#define CREATE_LINKED_LIST(NODE_TYPE, size) createLinkedListOfSize##NODE_TYPE\
+(size)
+
 /*Allocates and returns a 0-initialized node*/
 #define CREATE_LIST_NODE(NODE_TYPE) createListNode_##NODE_TYPE\
 ()
@@ -192,4 +284,4 @@ inline void deleteNode_##NODE_TYPE\
 #define DELETE_NODE(NODE_TYPE, prev, offsetFromPrevious) deleteNode_##NODE_TYPE\
 (prev, offsetFromPrevious)
 
-#endif // !TINY_LIST
+#endif // !TINY_LIST_H

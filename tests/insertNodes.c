@@ -20,7 +20,7 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR TH
 
 #include "get_time_µs.h";
 
-#include "../tinyList.h"
+#include <TinyList/tinyList.h>
 
 DEFINE_LIST_NODE_TYPE(uint8_t)
 #ifndef NDEBUG
