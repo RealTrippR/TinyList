@@ -45,7 +45,7 @@ enum TINYLIST_RETURN_CODE {
 /**********************************************************************************/
 /*                                MULTI-THREADING                                 */
 #ifndef TINY_LIST_THREAD_COUNT 
-    #define TINY_LIST_THREAD_COUNT 8
+    #define TINY_LIST_THREAD_COUNT 4
 #endif
 
 struct TINY_LIST_CREATE_NODES_THREAD_DATA {

@@ -159,7 +159,7 @@
   <ItemGroup>
     <ClInclude Include="tests\cthread.h" />
     <ClInclude Include="tests\get_time_µs.h" />
-    <ClInclude Include="tinyList.h" />
+    <ClInclude Include="TinyList\tinyList.h" />
     <ClInclude Include="validator\hashmap.h" />
     <ClInclude Include="validator\tinyListValidator.h" />
   </ItemGroup>

@@ -30,7 +30,7 @@ __DEFINE_TINY_LIST_VERIFY_OPERATIONS__(uint8_t) /*Defines the verification funct
 DEFINE_LINKED_LIST_OPERATIONS(uint8_t);
 
 
-#define NODE_COUNT 200000
+#define NODE_COUNT 500000
 
 #define TEST_SAMPLES 150
 
@@ -93,7 +93,7 @@ int main() {
 			runSTcreateListTest(&tt);
 			t += tt;
 		}
-		printf("Single Thead - Avg Time spent: %.6f seconds - %d nodes allocated per test @ %d samples\n", t / TEST_SAMPLES, NODE_COUNT, TEST_SAMPLES);
+		printf("Single Theaded - Avg Time spent: %.6f seconds - %d nodes allocated per test @ %d samples\n", t / TEST_SAMPLES, NODE_COUNT, TEST_SAMPLES);
 
 		t = 0;
 		for (uint16_t i = 0; i < TEST_SAMPLES; ++i) {

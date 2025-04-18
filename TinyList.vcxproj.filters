@@ -51,14 +51,14 @@
     <ClInclude Include="validator\tinyListValidator.h">
       <Filter>Header Files\Validator</Filter>
     </ClInclude>
-    <ClInclude Include="tinyList.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="tests\cthread.h">
       <Filter>Header Files\ext</Filter>
     </ClInclude>
     <ClInclude Include="tests\get_time_µs.h">
       <Filter>tests</Filter>
+    </ClInclude>
+    <ClInclude Include="TinyList\tinyList.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
