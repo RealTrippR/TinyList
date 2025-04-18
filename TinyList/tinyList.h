@@ -108,7 +108,7 @@ void thread_create_nodes##NODE_TYPE\
 {\
     struct  TINY_LIST_CREATE_NODES_THREAD_DATA* data = (struct TINY_LIST_CREATE_NODES_THREAD_DATA*)arg;\
     LIST_NODE(NODE_TYPE)* lastNode = (LIST_NODE(NODE_TYPE)*)data->head;\
-    for (uint_fast32_t i = 0; i < data->allocCount; ++i)\
+    for (uint_fast32_t i = 1/*starts at head*/; i < data->allocCount; ++i)\
     {\
         LIST_NODE(NODE_TYPE)* node = CREATE_LIST_NODE(NODE_TYPE);\
         INSERT_LIST_NODE(uint8_t, lastNode, node);\
@@ -160,7 +160,7 @@ inline LIST_NODE(NODE_TYPE)* createLinkedListOfSize##NODE_TYPE\
     } else {\
         LIST_NODE(NODE_TYPE)* head = CREATE_LIST_NODE(uint8_t);\
         LIST_NODE(NODE_TYPE)* lastNode = head;\
-        for (uint_fast16_t i = 0; i < size; ++i) {\
+        for (uint_fast16_t i = 1/*starts at head*/; i < size; ++i) {\
             LIST_NODE(NODE_TYPE)* node = CREATE_LIST_NODE(uint8_t);\
             INSERT_LIST_NODE(uint8_t, lastNode, node);\
             lastNode=node;\
