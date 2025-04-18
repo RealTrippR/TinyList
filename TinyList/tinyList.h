@@ -111,7 +111,7 @@ void thread_create_nodes##NODE_TYPE\
     for (uint_fast32_t i = 1/*starts at head*/; i < data->allocCount; ++i)\
     {\
         LIST_NODE(NODE_TYPE)* node = CREATE_LIST_NODE(NODE_TYPE);\
-        INSERT_LIST_NODE(uint8_t, lastNode, node);\
+        INSERT_LIST_NODE(NODE_TYPE, lastNode, node);\
         lastNode = node;\
     }\
     lastNode->next = data->nextHead;\
@@ -127,7 +127,7 @@ inline LIST_NODE(NODE_TYPE)* createLinkedListOfSize##NODE_TYPE\
         static struct cthreads_args winArgs[TINY_LIST_THREAD_COUNT]; \
         LIST_NODE(NODE_TYPE)* tmpHeadNodes[TINY_LIST_THREAD_COUNT];\
         for (uint_fast8_t i = 0; i < TINY_LIST_THREAD_COUNT; ++i) {\
-            tmpHeadNodes[i] = CREATE_LIST_NODE(uint8_t);\
+            tmpHeadNodes[i] = CREATE_LIST_NODE(NODE_TYPE);\
         }\
         \
         uint_fast32_t chunkSize = size / TINY_LIST_THREAD_COUNT;\
@@ -158,11 +158,11 @@ inline LIST_NODE(NODE_TYPE)* createLinkedListOfSize##NODE_TYPE\
         }\
         return tmpHeadNodes[0];\
     } else {\
-        LIST_NODE(NODE_TYPE)* head = CREATE_LIST_NODE(uint8_t);\
+        LIST_NODE(NODE_TYPE)* head = CREATE_LIST_NODE(NODE_TYPE);\
         LIST_NODE(NODE_TYPE)* lastNode = head;\
         for (uint_fast16_t i = 1/*starts at head*/; i < size; ++i) {\
-            LIST_NODE(NODE_TYPE)* node = CREATE_LIST_NODE(uint8_t);\
-            INSERT_LIST_NODE(uint8_t, lastNode, node);\
+            LIST_NODE(NODE_TYPE)* node = CREATE_LIST_NODE(NODE_TYPE);\
+            INSERT_LIST_NODE(NODE_TYPE, lastNode, node);\
             lastNode=node;\
         }\
         return head;\

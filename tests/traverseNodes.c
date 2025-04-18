@@ -22,16 +22,16 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR TH
 
 #include <TinyList/tinyList.h>
 
-DEFINE_LIST_NODE_TYPE(uint8_t)
+DEFINE_LIST_NODE_TYPE(uint32_t)
 #ifndef NDEBUG
 #define __TINY_LIST_VERIFY_OPERATIONS__ /*Enables verification of TinyList operations*/
-__DEFINE_TINY_LIST_VERIFY_OPERATIONS__(uint8_t) /*Defines the verification functions*/
+__DEFINE_TINY_LIST_VERIFY_OPERATIONS__(uint32_t) /*Defines the verification functions*/
 #endif
-DEFINE_LINKED_LIST_OPERATIONS(uint8_t);
+DEFINE_LINKED_LIST_OPERATIONS(uint32_t);
 
 
-#define NODE_COUNT 10000
-#define TARGET_NODE_POS (NODE_COUNT-1)
+#define NODE_COUNT 50000
+#define TARGET_NODE_POS NODE_COUNT-1
 #define TEST_SAMPLES 150
 
 
@@ -39,9 +39,10 @@ void getElementAtIndexTest(double *timeInSec) {
 
 	__TINY_LIST_INIT_CLEANUP_VALIDATOR__();
 
-	LIST_NODE(uint8_t)* head = CREATE_LINKED_LIST(uint8_t, NODE_COUNT);
-	LIST_NODE(uint8_t)* lastNode = head;
-	for (uint64_t i = 0; i < NODE_COUNT-1; ++i) {
+	LIST_NODE(uint32_t)* head = CREATE_LINKED_LIST(uint32_t, NODE_COUNT);
+
+	LIST_NODE(uint32_t)* lastNode = head;
+	for (uint64_t i = 0; i < NODE_COUNT; ++i) {
 		lastNode->value = i;
 		lastNode = lastNode->next;
 	}
@@ -50,16 +51,17 @@ void getElementAtIndexTest(double *timeInSec) {
 
 	long long tBegin = getMicroseconds();
 
-	const LIST_NODE(uint8_t)* node = GET_NODE_AT_POSITON(uint8_t, head, TARGET_NODE_POS);
+	const LIST_NODE(uint32_t)* node = GET_NODE_AT_POSITON(uint32_t, head, TARGET_NODE_POS);
 
 	long long tEnd = getMicroseconds();
 	double time_spent = (double)(tEnd - tBegin) / 1000000;
 
-	DESTROY_LINKED_LIST(uint8_t, head);
+	printf("Value at position %d: %d \n", TARGET_NODE_POS, node->value);
+
+	DESTROY_LINKED_LIST(uint32_t, head);
 
 	__TINY_LIST_VALIDATE_CLEANUP__();
 
-	printf("Value at position %d: %d \n", TARGET_NODE_POS, node->value);
 	if (timeInSec) {
 		*timeInSec = time_spent;
 	}
