@@ -3,13 +3,10 @@
 
 #include <time.h>
 
-#include <TinyList/tinyList.h>
-
-DEFINE_LIST_NODE_TYPE(uint8_t)
-#ifndef NDEBUG
 #define __TINY_LIST_VERIFY_OPERATIONS__ /*Enables verification of TinyList operations*/
+#include <TinyList/tinyList.h>
+DEFINE_LIST_NODE_TYPE(uint8_t)
 __DEFINE_TINY_LIST_VERIFY_OPERATIONS__(uint8_t) /*Defines the verification functions*/
-#endif
 DEFINE_LINKED_LIST_OPERATIONS(uint8_t);
 
 
