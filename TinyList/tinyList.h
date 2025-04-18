@@ -134,11 +134,11 @@ inline LIST_NODE(NODE_TYPE)* createLinkedListOfSize##NODE_TYPE\
         for (uint_fast8_t i = 0; i < TINY_LIST_THREAD_COUNT; ++i) {\
             /*Create a head for each thread. The heads will be joined back together once the creation of nodes is complete*/\
             thread_data[i].thread_id = i;\
-            thread_data[i].allocCount = chunkSize + chunkSize + ((uint32_t)(i < remainder));\
-            thread_data[i].head = &(tmpHeadNodes[i]);\
+            thread_data[i].allocCount = chunkSize + ((uint32_t)(i < remainder));\
+            thread_data[i].head = tmpHeadNodes[i];\
             \
             if (i<TINY_LIST_THREAD_COUNT-1) {\
-                thread_data[i].nextHead = &(tmpHeadNodes[i+1]); \
+                thread_data[i].nextHead = tmpHeadNodes[i+1]; \
             } \
             else \
             {thread_data[i].nextHead = NULL;}\
@@ -151,9 +151,6 @@ inline LIST_NODE(NODE_TYPE)* createLinkedListOfSize##NODE_TYPE\
         \
         for (uint_fast8_t i = 0; i < TINY_LIST_THREAD_COUNT; ++i) {\
             cthreads_thread_join(threads[i], NULL);\
-        }\
-        for (uint_fast8_t i = 0; i < TINY_LIST_THREAD_COUNT; ++i) {\
-            cthreads_thread_detach(threads[i]);\
         }\
         return tmpHeadNodes[0];\
     } else {\
