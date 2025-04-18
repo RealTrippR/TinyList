@@ -2,7 +2,9 @@
 #include <stdint.h>
 
 #include <time.h>
-#include "../tinyList.h"
+
+#include <TinyList/tinyList.h>
+
 DEFINE_LIST_NODE_TYPE(uint8_t)
 #ifndef NDEBUG
 #define __TINY_LIST_VERIFY_OPERATIONS__ /*Enables verification of TinyList operations*/
