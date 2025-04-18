@@ -28,9 +28,6 @@
     <ClCompile Include="tests\rearrange.c">
       <Filter>tests</Filter>
     </ClCompile>
-    <ClCompile Include="tests\searchNodes.c">
-      <Filter>tests</Filter>
-    </ClCompile>
     <ClCompile Include="tests\Test.c">
       <Filter>tests</Filter>
     </ClCompile>
@@ -43,6 +40,7 @@
     <ClCompile Include="insertNodes.cpp">
       <Filter>tests\ComparisonToStandardCPP</Filter>
     </ClCompile>
+    <ClCompile Include="tests\traverseNodes.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="validator\hashmap.h">
@@ -54,7 +52,7 @@
     <ClInclude Include="tests\cthread.h">
       <Filter>Header Files\ext</Filter>
     </ClInclude>
-    <ClInclude Include="tests\get_time_µs.h">
+    <ClInclude Include="tests\get_time_us.h">
       <Filter>tests</Filter>
     </ClInclude>
     <ClInclude Include="TinyList\tinyList.h">
