@@ -19,7 +19,6 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR TH
 #include <stdint.h>
 
 #include "get_time_µs.h";
-
 #include <TinyList/tinyList.h>
 
 DEFINE_LIST_NODE_TYPE(uint32_t)

@@ -41,7 +41,6 @@ enum TINYLIST_RETURN_CODE {
 #define PREFETCH(addr)
 #endif
 
-
 /**********************************************************************************/
 /*                                MULTI-THREADING                                 */
 #ifndef TINY_LIST_THREAD_COUNT 
