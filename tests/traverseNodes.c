@@ -1,15 +1,15 @@
 /*
-Copyright © 2025 Tripp Robins
+Copyright ¬© 2025 Tripp Robins
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this
-software and associated documentation files (the ìSoftwareî), to deal in the Software
+software and associated documentation files (the ‚ÄúSoftware‚Äù), to deal in the Software
 without restriction, including without limitation the rights to use, copy, modify, merge,
 publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons
 to whom the Software is furnished to do so, subject to the following conditions:
 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED ìAS ISî, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+THE SOFTWARE IS PROVIDED ‚ÄúAS IS‚Äù, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
 THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -18,7 +18,7 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR TH
 #include <stdio.h>
 #include <stdint.h>
 
-#include "get_time_µs.h";
+#include "get_time_¬µs.h";
 
 #include <TinyList/tinyList.h>
 
@@ -74,6 +74,6 @@ int main() {
 		getElementAtIndexTest(&tt);
 		t += tt;
 	}
-	// Note that it may seem to take longer than this, but that's because the time returned by getElementAtIndexTest does not include the time it takes to create or destroy a list, only the time it takes to access it.
+	// Note that it may seem to take longer than this, but that's because the time returned by getElementAtIndexTest does not include the time it takes to create or destroy a list, only the time it takes to access elements within it.
 	printf("Avg time spent finding the node at position %d in a list of %d elements: %f @ %d samples\n", TARGET_NODE_POS, NODE_COUNT, t / TEST_SAMPLES, TEST_SAMPLES);
 }
