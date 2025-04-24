@@ -41,7 +41,7 @@
       <Filter>tests\ComparisonToStandardCPP</Filter>
     </ClCompile>
     <ClCompile Include="tests\traverseNodes.c" />
-    <ClCompile Include="CPP_Binding\tinylist.cpp">
+    <ClCompile Include="CPP_Binding\tinyListTest.cpp">
       <Filter>CPP_Test</Filter>
     </ClCompile>
   </ItemGroup>

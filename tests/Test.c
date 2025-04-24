@@ -3,6 +3,8 @@
 
 #include <time.h>
 
+#define _CRTDBG_MAP_ALLOC
+#include <crtdbg.h>
 
 #ifndef NDEBUG
     #define __TINY_LIST_VERIFY_OPERATIONS__ /*Enables verification of TinyList operations, it's important that this comes before #include <TinyList/tinyList.h>*/
@@ -13,10 +15,12 @@ __DEFINE_TINY_LIST_VERIFY_OPERATIONS__(uint8_t) /*Defines the verification funct
 DEFINE_LINKED_LIST_OPERATIONS(uint8_t);
 
 int main() {
-    const clock_t tBegin = clock();
 #ifndef NDEBUG
-    __TINY_LIST_INIT_CLEANUP_VALIDATOR__();
+    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif // !NDEBUG
+
+    const clock_t tBegin = clock();
+
 
     LIST_NODE(uint8_t)* head = CREATE_LIST_NODE(uint8_t);
 
@@ -37,11 +41,11 @@ int main() {
 
     DESTROY_LINKED_LIST(uint8_t, head);
 
-#ifndef NDEBUG
-    __TINY_LIST_VALIDATE_CLEANUP__();
-#endif
     const clock_t tEnd = clock();
     double time_spent = (double)(tEnd - tBegin) / CLOCKS_PER_SEC;
 	printf("Time spent: %.5f seconds\n", time_spent);
 
+#ifndef NDEBUG
+    _CrtDumpMemoryLeaks();
+#endif // !NDEBUG
 }

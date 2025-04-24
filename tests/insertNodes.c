@@ -25,9 +25,7 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR TH
 
 #ifndef NDEBUG
 	#define __TINY_LIST_VERIFY_OPERATIONS__ /*Enables verification of TinyList operations, it's important that this comes before #include <TinyList/tinyList.h>*/
-	
 #endif // !NDEBUG
-
 #include <TinyList/tinyList.h>
 DEFINE_LIST_NODE_TYPE(uint8_t)
 __DEFINE_TINY_LIST_VERIFY_OPERATIONS__(uint8_t) /*Defines the verification functions*/
@@ -83,7 +81,6 @@ void runMTcreateListTest(double* timeInSec) {
 
 int main() {
 #ifndef NDEBUG
-	__TINY_LIST_INIT_CLEANUP_VALIDATOR__();
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif // !NDEBUG
 	{
@@ -104,7 +101,6 @@ int main() {
 		printf("Multithreaded - %d Threads - Avg Time spent: %.6f seconds - %d nodes allocated per test @ %f samples\n", TINY_LIST_THREAD_COUNT, t / TEST_SAMPLES, NODE_COUNT, TEST_SAMPLES);
 	}
 #ifndef NDEBUG
-	__TINY_LIST_VALIDATE_CLEANUP__();
 	_CrtDumpMemoryLeaks();
 #endif // !NDEBUG
 

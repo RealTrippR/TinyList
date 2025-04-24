@@ -30,7 +30,11 @@ enum TINYLIST_RETURN_CODE {
     TINYLIST_SUCCESS
 };
 
-#define LIST_NODE(NODE_TYPE) struct listNode_##NODE_TYPE
+#ifdef TINY_LIST_USE_CPP
+    #define LIST_NODE(NODE_TYPE) listNode_##NODE_TYPE
+#else
+    #define LIST_NODE(NODE_TYPE) struct listNode_##NODE_TYPE
+#endif // TINY_LIST_USE_CPP
 
 #if defined(_MSC_VER)
 #include <xmmintrin.h>
@@ -43,7 +47,7 @@ enum TINYLIST_RETURN_CODE {
 
 
 
-#ifdef TINY_LIST_USE_CPP_NEW_AND_FREE
+#ifdef TINY_LIST_USE_CPP
 #define TINY_LIST_ALLOC_OP(NODE_TYPE) new LIST_NODE(NODE_TYPE)
 #define TINY_LIST_DEALLOC_OP(X) delete X
 #define TINY_LIST_CLEAR_OP()
@@ -51,8 +55,7 @@ enum TINYLIST_RETURN_CODE {
 #define TINY_LIST_ALLOC_OP(NODE_TYPE) (LIST_NODE(NODE_TYPE)*)malloc(sizeof(LIST_NODE(NODE_TYPE)))
 #define TINY_LIST_DEALLOC_OP(X) free(X)
 #define TINY_LIST_CLEAR_OP(NODE_TYPE, node) memset((void*)node, 0, sizeof(LIST_NODE(NODE_TYPE)))
-
-#endif // !TINY_LIST_USE_CPP_NEW_AND_FREE
+#endif // !TINY_LIST_USE_CPP
 
 
 /**********************************************************************************/
@@ -93,7 +96,6 @@ void deleteNode_##NODE_TYPE(LIST_NODE(NODE_TYPE)* prev, uint32_t offsetFromPrev)
 inline void __tiny_list__deallocNode##NODE_TYPE(LIST_NODE(NODE_TYPE)* node) {\
     TINY_LIST_DEALLOC_OP(node);\
 }
-#endif
 
 #define __tiny_list_define_allocNode(NODE_TYPE)\
 inline LIST_NODE(NODE_TYPE)* __tiny_list__allocNode##NODE_TYPE() {\
