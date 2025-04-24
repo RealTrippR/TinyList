@@ -3,6 +3,8 @@ Tiny list is a simple C-macro based implementation of a linked list.
 It supports basic operations, such as node insertion and deletion, and linked list reversing, searching, and length retrieval.
 TinyList has an optional validator to prevent errors and detect memory leaks.
 
+#define TINY_LIST_USE_CPP enables backwards compatibilty with C++.
+
 ## Example ##
 ```
 #include "tinyList.h"
