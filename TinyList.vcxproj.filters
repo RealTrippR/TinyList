@@ -17,11 +17,11 @@
     <Filter Include="tests\ComparisonToStandardCPP">
       <UniqueIdentifier>{cc5c015e-e88a-466e-afde-6dcc233d0ded}</UniqueIdentifier>
     </Filter>
+    <Filter Include="CPP_Test">
+      <UniqueIdentifier>{1ac406f0-95f0-4587-93c2-7a4574c96fea}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="validator\hashmap.c">
-      <Filter>Header Files\Validator</Filter>
-    </ClCompile>
     <ClCompile Include="tests\insertNodes.c">
       <Filter>tests</Filter>
     </ClCompile>
@@ -41,11 +41,11 @@
       <Filter>tests\ComparisonToStandardCPP</Filter>
     </ClCompile>
     <ClCompile Include="tests\traverseNodes.c" />
+    <ClCompile Include="CPP_Binding\tinylist.cpp">
+      <Filter>CPP_Test</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="validator\hashmap.h">
-      <Filter>Header Files\Validator</Filter>
-    </ClInclude>
     <ClInclude Include="validator\tinyListValidator.h">
       <Filter>Header Files\Validator</Filter>
     </ClInclude>

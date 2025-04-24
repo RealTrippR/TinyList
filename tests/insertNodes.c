@@ -15,31 +15,33 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+#define _CRTDBG_MAP_ALLOC
+#include <crtdbg.h>
+
 #include <stdio.h>
 #include <stdint.h>
 
-#include "get_time_µs.h";
+#include "get_time_us.h";
+
+#ifndef NDEBUG
+	#define __TINY_LIST_VERIFY_OPERATIONS__ /*Enables verification of TinyList operations, it's important that this comes before #include <TinyList/tinyList.h>*/
+	
+#endif // !NDEBUG
 
 #include <TinyList/tinyList.h>
-
 DEFINE_LIST_NODE_TYPE(uint8_t)
-#ifndef NDEBUG
-#define __TINY_LIST_VERIFY_OPERATIONS__ /*Enables verification of TinyList operations*/
 __DEFINE_TINY_LIST_VERIFY_OPERATIONS__(uint8_t) /*Defines the verification functions*/
-#endif
 DEFINE_LINKED_LIST_OPERATIONS(uint8_t);
 
 
-#define NODE_COUNT 250000
+#define NODE_COUNT 150000
 
-#define TEST_SAMPLES 150
+#define TEST_SAMPLES 25
 
 // single-threaded
 void runSTcreateListTest(double* timeInSec) {
 
 	long long tBegin = getMicroseconds();
-
-	__TINY_LIST_INIT_CLEANUP_VALIDATOR__();
 
 	LIST_NODE(uint8_t)* head = CREATE_LIST_NODE(uint8_t);
 
@@ -56,7 +58,6 @@ void runSTcreateListTest(double* timeInSec) {
 	
 	DESTROY_LINKED_LIST(uint8_t, head);
 
-	__TINY_LIST_VALIDATE_CLEANUP__();
 
 	if (timeInSec) {
 		*timeInSec = time_spent;
@@ -64,8 +65,6 @@ void runSTcreateListTest(double* timeInSec) {
 }
 // multi-threaded
 void runMTcreateListTest(double* timeInSec) {
-
-	__TINY_LIST_INIT_CLEANUP_VALIDATOR__();
 
 	long long tBegin = getMicroseconds();
 
@@ -76,7 +75,6 @@ void runMTcreateListTest(double* timeInSec) {
 	
 	DESTROY_LINKED_LIST(uint8_t, head);
 
-	__TINY_LIST_VALIDATE_CLEANUP__();
 
 	if (timeInSec) {
 		*timeInSec = time_spent;
@@ -84,6 +82,10 @@ void runMTcreateListTest(double* timeInSec) {
 }
 
 int main() {
+#ifndef NDEBUG
+	__TINY_LIST_INIT_CLEANUP_VALIDATOR__();
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+#endif // !NDEBUG
 	{
 		double t = 0;
 		for (uint16_t i = 0; i < TEST_SAMPLES; ++i) {
@@ -101,4 +103,9 @@ int main() {
 		}
 		printf("Multithreaded - %d Threads - Avg Time spent: %.6f seconds - %d nodes allocated per test @ %f samples\n", TINY_LIST_THREAD_COUNT, t / TEST_SAMPLES, NODE_COUNT, TEST_SAMPLES);
 	}
+#ifndef NDEBUG
+	__TINY_LIST_VALIDATE_CLEANUP__();
+	_CrtDumpMemoryLeaks();
+#endif // !NDEBUG
+
 }

@@ -3,12 +3,14 @@
 
 #include <time.h>
 
-#define __TINY_LIST_VERIFY_OPERATIONS__ /*Enables verification of TinyList operations*/
+
+#ifndef NDEBUG
+    #define __TINY_LIST_VERIFY_OPERATIONS__ /*Enables verification of TinyList operations, it's important that this comes before #include <TinyList/tinyList.h>*/
+#endif // !NDEBUG
 #include <TinyList/tinyList.h>
 DEFINE_LIST_NODE_TYPE(uint8_t)
 __DEFINE_TINY_LIST_VERIFY_OPERATIONS__(uint8_t) /*Defines the verification functions*/
 DEFINE_LINKED_LIST_OPERATIONS(uint8_t);
-
 
 int main() {
     const clock_t tBegin = clock();

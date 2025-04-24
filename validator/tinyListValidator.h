@@ -21,41 +21,6 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR TH
 #include <stdlib.h>
 #include <assert.h>
 
-#include "hashmap.h"
-
-struct TINYLIST_CLEANUP_VALIDATOR {
-    struct hashmap* addressHashMap;
-} TLcleanupValidator = { NULL };
-/**********************************************************************************/\
-
-int TINYLIST_validator_voidptr_compare(const void* a, const void* b, void* udata) {
-    return ((*(char**)a) - (*(char**)b));
-}
-
-uint64_t TINYLIST_validator_voidptr_hash(const void* item, uint64_t seed0, uint64_t seed1) {
-    return hashmap_xxhash3(item, sizeof(item), seed0, seed1);
-}
-
-void __TINY_LIST_INIT_CLEANUP_VALIDATOR__() {
-    TLcleanupValidator.addressHashMap = hashmap_new(sizeof(void*), 0, 0, 0,
-        TINYLIST_validator_voidptr_hash, TINYLIST_validator_voidptr_compare, NULL, NULL);
-}
-
-enum TINYLIST_RETURN_CODE __TINY_LIST_VALIDATE_CLEANUP__() {
-    if (hashmap_count(TLcleanupValidator.addressHashMap) > 0) {
-        printf("TINYLIST: MEMORY LEAK: Not all allocated list nodes have been freed, %d remains allocated!\nAllocated nodes:\n", hashmap_count(TLcleanupValidator.addressHashMap));
-        size_t iter = 0;
-        void* item;
-        while (hashmap_iter(TLcleanupValidator.addressHashMap, &iter, &item)) {
-            printf("\tnode @ memory address: %p\n", item);
-        }
-        assert(0 && "TINYLIST: MEMORY LEAK: Not all allocated list nodes have been freed!");
-    }
-    hashmap_free(TLcleanupValidator.addressHashMap);
-    return TINYLIST_SUCCESS;
-}
-
-
 #ifdef __TINY_LIST_VERIFY_OPERATIONS__
 
 #define __DEFINE_TINY_LIST_VERIFY_OPERATIONS__(NODE_TYPE)\

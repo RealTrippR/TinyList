@@ -41,6 +41,20 @@ enum TINYLIST_RETURN_CODE {
 #define PREFETCH(addr)
 #endif
 
+
+
+#ifdef TINY_LIST_USE_CPP_NEW_AND_FREE
+#define TINY_LIST_ALLOC_OP(NODE_TYPE) new LIST_NODE(NODE_TYPE)
+#define TINY_LIST_DEALLOC_OP(X) delete X
+#define TINY_LIST_CLEAR_OP()
+#else 
+#define TINY_LIST_ALLOC_OP(NODE_TYPE) (LIST_NODE(NODE_TYPE)*)malloc(sizeof(LIST_NODE(NODE_TYPE)))
+#define TINY_LIST_DEALLOC_OP(X) free(X)
+#define TINY_LIST_CLEAR_OP(NODE_TYPE, node) memset((void*)node, 0, sizeof(LIST_NODE(NODE_TYPE)))
+
+#endif // !TINY_LIST_USE_CPP_NEW_AND_FREE
+
+
 /**********************************************************************************/
 /*                                MULTI-THREADING                                 */
 #ifndef TINY_LIST_THREAD_COUNT 
@@ -75,34 +89,36 @@ void deleteNode_##NODE_TYPE(LIST_NODE(NODE_TYPE)* prev, uint32_t offsetFromPrev)
 
 #include "validator/tinylistValidator.h"
 
-void __tiny_list__deallocNode(void* node) {
-
-#ifdef __TINY_LIST_VERIFY_OPERATIONS__
-    hashmap_delete(TLcleanupValidator.addressHashMap, (void**)(&node));
+#define __tiny_list_define_deallocNode(NODE_TYPE)\
+inline void __tiny_list__deallocNode##NODE_TYPE(LIST_NODE(NODE_TYPE)* node) {\
+    TINY_LIST_DEALLOC_OP(node);\
+}
 #endif
-    free(node);
+
+#define __tiny_list_define_allocNode(NODE_TYPE)\
+inline LIST_NODE(NODE_TYPE)* __tiny_list__allocNode##NODE_TYPE() {\
+    LIST_NODE(NODE_TYPE)* __restrict ptr = TINY_LIST_ALLOC_OP(NODE_TYPE);\
+    TINY_LIST_CLEAR_OP(NODE_TYPE, ptr);\
+    return ptr;\
 }
 
-void* __tiny_list__allocNode(uint16_t bytes) {
-    void* __restrict ptr = malloc(bytes);
-#ifdef __TINY_LIST_VERIFY_OPERATIONS__
-    hashmap_set(TLcleanupValidator.addressHashMap, (void**)(&ptr));
-#endif
-    return ptr;
-}
-
+#define TINY_LIST_ALLOC(NODE_TYPE) __tiny_list__allocNode##NODE_TYPE()
+#define TINY_LIST_DEALLOC(NODE_TYPE, node) __tiny_list__deallocNode##NODE_TYPE(node)
 
 #define DEFINE_LINKED_LIST_OPERATIONS(NODE_TYPE)\
+\
+__tiny_list_define_allocNode(NODE_TYPE); /*define alloc node function*/\
+__tiny_list_define_deallocNode(NODE_TYPE); /*define dealloc node function*/\
 \
 inline LIST_NODE(NODE_TYPE)* createListNode_##NODE_TYPE\
 ()\
 {\
-    LIST_NODE(NODE_TYPE)* node = (LIST_NODE(NODE_TYPE)*)__tiny_list__allocNode(sizeof(LIST_NODE(NODE_TYPE)));\
+    LIST_NODE(NODE_TYPE)* node = TINY_LIST_ALLOC(NODE_TYPE);\
     VALIDATE_NODE_CREATION(NODE_TYPE,node);\
     memset(node, 0, sizeof(LIST_NODE(NODE_TYPE)));\
     return node;\
 }\
-void thread_create_nodes##NODE_TYPE\
+void* thread_create_nodes##NODE_TYPE\
 (void* arg)\
 {\
     struct  TINY_LIST_CREATE_NODES_THREAD_DATA* data = (struct TINY_LIST_CREATE_NODES_THREAD_DATA*)arg;\
@@ -113,7 +129,8 @@ void thread_create_nodes##NODE_TYPE\
         INSERT_LIST_NODE(NODE_TYPE, lastNode, node);\
         lastNode = node;\
     }\
-    lastNode->next = data->nextHead;\
+    lastNode->next = (LIST_NODE(NODE_TYPE)*)data->nextHead;\
+    return NULL;\
 }\
 inline LIST_NODE(NODE_TYPE)* createLinkedListOfSize##NODE_TYPE\
 (uint32_t size)\
@@ -171,7 +188,7 @@ inline void destroyLinkedList_##NODE_TYPE\
     VALIDATE_LIST_CLEANUP(NODE_TYPE, node);\
     while (node != NULL) {\
         const void* __restrict tmp = node->next;\
-        __tiny_list__deallocNode(node);\
+        TINY_LIST_DEALLOC(NODE_TYPE,node);\
         node=(LIST_NODE(NODE_TYPE)*)tmp;\
     }\
 }\
@@ -246,7 +263,7 @@ inline void deleteNode_##NODE_TYPE\
 {\
     if (offsetFromPrev!=1) {prev = getNodeAtPosition_##NODE_TYPE(prev, offsetFromPrev-1);} /*Get offsetFromPrev-1*/ \
     LIST_NODE(NODE_TYPE)* next = prev->next->next; /*store the node after the node to delete*/ \
-    __tiny_list__deallocNode(prev->next);\
+    TINY_LIST_DEALLOC(NODE_TYPE, prev->next);\
     prev->next = next;\
 }
 
